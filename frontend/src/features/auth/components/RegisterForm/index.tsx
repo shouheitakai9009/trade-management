@@ -43,7 +43,7 @@ const FormField: React.FC<FormFieldProps> = ({
         type={type}
         placeholder={placeholder}
         {...register}
-        className="bg-[#363A45] border-[#4A4E59] text-white"
+        className="bg-[#363A45] border-[#4A4E59] text-white h-12 px-4 py-3 text-base"
       />
       {children}
       {error?.message && (
@@ -69,13 +69,6 @@ export function RegisterForm() {
       confirmPassword: "",
       acceptTerms: false,
     },
-  });
-
-  // デバッグ用：フォームの状態をコンソールに出力
-  console.log("Form state:", {
-    isDirty: form.formState.isDirty,
-    isValid: form.formState.isValid,
-    errors: form.formState.errors,
   });
 
   // フォーム送信処理（モック）
@@ -180,7 +173,7 @@ export function RegisterForm() {
 
         <Button
           type="submit"
-          className="w-full bg-[#2962FF] hover:bg-[#0039CB] text-white"
+          className="w-full bg-[#2962FF] hover:bg-[#0039CB] text-white h-12 text-base font-medium"
           disabled={
             isLoading ||
             (form.formState.isDirty &&
