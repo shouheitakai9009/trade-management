@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,14 +15,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+// 認証関連のルート
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+// 認証が必要なルート
+Route::middleware('auth:sanctum')->group(function () {
+  Route::post('/logout', [AuthController::class, 'logout']);
+  Route::get('/me', [AuthController::class, 'me']);
+  Route::get('/user', function (Request $request) {
     return $request->user();
+  });
 });
 
 // サンプルAPI
 Route::get('/hello', function () {
-    return response()->json([
-        'message' => 'Hello from Laravel API!',
-        'status' => 'success'
-    ]);
+  return response()->json([
+    'message' => 'Hello from Laravel API!',
+    'status' => 'success'
+  ]);
 });

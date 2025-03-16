@@ -4,10 +4,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PasswordStrengthIndicator } from "../PasswordStrengthIndicator";
 import { RegisterFormValues, registerSchema } from "./validation";
+import { isApiError, setFormErrors } from "@/utils/api-error";
 
 type FormErrorProps = {
   message?: string;
@@ -67,28 +67,44 @@ export function RegisterForm() {
       email: "",
       password: "",
       confirmPassword: "",
-      acceptTerms: false,
     },
   });
 
-  // フォーム送信処理（モック）
+  // フォーム送信処理
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       setIsLoading(true);
       setServerError(null);
 
-      // API通信のモック
-      console.log("登録データ:", data);
+      // API通信
+      const { register } = await import("@/apis/auth");
+      await register({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.confirmPassword,
+      });
 
       // 成功時の処理
-      setTimeout(() => {
-        setIsLoading(false);
-        navigate("/dashboard");
-      }, 1000);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_) {
       setIsLoading(false);
-      setServerError("アカウント作成に失敗しました。もう一度お試しください。");
+      navigate("/dashboard");
+    } catch (error) {
+      setIsLoading(false);
+
+      if (isApiError(error)) {
+        // バリデーションエラーの処理
+        setFormErrors(error, form.setError, {
+          username: "username",
+          email: "email",
+          password: "password",
+          password_confirmation: "confirmPassword",
+        });
+      } else {
+        // その他のエラー
+        setServerError(
+          "アカウント作成に失敗しました。もう一度お試しください。"
+        );
+      }
     }
   };
 
@@ -147,28 +163,6 @@ export function RegisterForm() {
             register={form.register("confirmPassword")}
             error={form.formState.errors.confirmPassword}
           />
-
-          {/* 利用規約同意 */}
-          <div className="flex items-start space-x-2">
-            <Checkbox
-              id="acceptTerms"
-              {...form.register("acceptTerms")}
-              className="mt-1 bg-[#363A45] border-[#4A4E59]"
-            />
-            <div>
-              <label
-                htmlFor="acceptTerms"
-                className="text-sm text-[#D1D4DC] cursor-pointer"
-              >
-                利用規約とプライバシーポリシーに同意します
-              </label>
-              {form.formState.errors.acceptTerms && (
-                <p className="text-xs text-red-500">
-                  {form.formState.errors.acceptTerms.message}
-                </p>
-              )}
-            </div>
-          </div>
         </div>
 
         <Button

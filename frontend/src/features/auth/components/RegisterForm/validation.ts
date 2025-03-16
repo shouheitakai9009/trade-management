@@ -19,12 +19,6 @@ export const registerSchema = z
       .regex(/[0-9]/, "数字を含める必要があります")
       .regex(/[^A-Za-z0-9]/, "特殊文字を含める必要があります"),
     confirmPassword: z.string(),
-    acceptTerms: z
-      .boolean()
-      .refine(
-        (val) => val === true,
-        "利用規約とプライバシーポリシーに同意する必要があります"
-      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "パスワードが一致しません",
