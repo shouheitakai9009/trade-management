@@ -61,6 +61,7 @@ export function RegisterForm() {
   // フォームの初期化
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
+    mode: "onChange", // リアルタイムバリデーション
     defaultValues: {
       username: "",
       email: "",
@@ -68,6 +69,13 @@ export function RegisterForm() {
       confirmPassword: "",
       acceptTerms: false,
     },
+  });
+
+  // デバッグ用：フォームの状態をコンソールに出力
+  console.log("Form state:", {
+    isDirty: form.formState.isDirty,
+    isValid: form.formState.isValid,
+    errors: form.formState.errors,
   });
 
   // フォーム送信処理（モック）
@@ -173,7 +181,11 @@ export function RegisterForm() {
         <Button
           type="submit"
           className="w-full bg-[#2962FF] hover:bg-[#0039CB] text-white"
-          disabled={isLoading}
+          disabled={
+            isLoading ||
+            (form.formState.isDirty &&
+              Object.keys(form.formState.errors).length > 0)
+          }
         >
           {isLoading ? "アカウント作成中..." : "アカウント作成"}
         </Button>
