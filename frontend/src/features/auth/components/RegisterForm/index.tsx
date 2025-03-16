@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PasswordStrengthIndicator } from "../PasswordStrengthIndicator";
-import { RegisterFormValues } from "./validation";
+import { RegisterFormValues, registerSchema } from "./validation";
 
 type FormErrorProps = {
   message?: string;
@@ -59,8 +60,7 @@ export function RegisterForm() {
 
   // フォームの初期化
   const form = useForm<RegisterFormValues>({
-    // 実際の実装時にはzodResolverを使用
-    // resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       email: "",
