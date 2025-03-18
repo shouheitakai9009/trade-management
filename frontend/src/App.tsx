@@ -2,6 +2,8 @@ import Dashboard from "./components/Dashboard";
 import { TradeTable } from "./components/TradeTable";
 import { Toaster } from "@/components/ui/sonner";
 
+// メインアプリケーションコンポーネント
+
 function App() {
   return (
     <>
