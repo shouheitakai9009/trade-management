@@ -17,7 +17,7 @@
         "command",
         "mcp"
       ],
-      "customInstructions": "- コードの品質とパフォーマンスを常に意識する\n- コンポーネントの再利用性を重視する\n- TypeScriptの型安全性を確保する\n- アクセシビリティガイドラインに従う\n- 適切なコメントとドキュメントを残す"
+      "source": "project"
     }
   ]
 }

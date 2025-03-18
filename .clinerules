@@ -1,8 +1,12 @@
-## ロールの割り当て
-- /frontend 以下のファイルを編集するとき、frontend.clinerules を遵守してください。
-- /backend 以下のファイルを編集するとき、backend.clinerules を遵守してください。
+====
+USER'S CUSTOM INSTRUCTIONS
+The following additional instructions are provided by the user, and should be followed to the best of your ability without interfering with the TOOL USE guidelines.
+[Language Preference (if set)]
+[Global Instructions]
+[Mode-specific Instructions]
 
-## タスク後に必ずやること
-- タスクが完了したら、必ずコミットしてください。マイクロコミットを意識してください。コマンドは以下
-- git add .
-- git commit -m "{分類（コンポーネント追加、機能追加、バグ修正等）}: {具体的に何を行ったか}"
+Rules:
+[.clinerules-{mode} rules]
+[.clinerules rules]
+[.cursorrules rules]
+[.windsurfrules rules]
