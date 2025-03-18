@@ -1,0 +1,855 @@
+## 重要
+
+ユーザーは Roo よりプログラミングが得意ですが、時短のために Roo にコーディングを依頼しています。
+
+2 回以上連続でテストを失敗した時は、現在の状況を整理して、一緒に解決方法を考えます。
+
+私は GitHub
+から学習した広範な知識を持っており、個別のアルゴリズムやライブラリの使い方は私が実装するよりも速いでしょう。テストコードを書いて動作確認しながら、ユーザーに説明しながらコードを書きます。
+
+反面、現在のコンテキストに応じた処理は苦手です。コンテキストが不明瞭な時は、ユーザーに確認します。
+
+## 作業開始準備
+
+1. 現在コンテキストの確認
+
+`git status` で現在の git のコンテキストを確認します。
+もし指示された内容と無関係な変更が多い場合、現在の変更からユーザーに別のタスクとして開始するように提案してください。
+
+無視するように言われた場合は、そのまま続行します。
+
+2. 要件をコンテキストに含める
+
+作業に入る前に、必ず `/docs/要件定義書.md` を確認します。
+ユーザーの指示が要件定義書のどの部分に当たる修正なのか判断し整理し、ユーザに簡潔に伝えてください。
+
+無視するように言われた場合は、そのまま続行します。
+
+
+## プロジェクト固有設定
+
+プロジェクト固有の設定についてまとめます。
+
+### パッケージ管理
+
+`bun` を使用しています。
+
+- ブラウザの立ち上げは `bun run dev` を使用します。
+- パッケージのインストールは `bun add hoge` を使用します。
+
+
+## Git ワークフロー
+
+このドキュメントでは、コミットとプルリクエストの作成に関するベストプラクティスを説明します。
+
+### コミットの作成
+
+コミットを作成する際は、以下の手順に従います：
+
+1. 変更の確認
+
+   ```bash
+   # 未追跡ファイルと変更の確認
+   git status
+
+   # 変更内容の詳細確認
+   git diff
+   ```
+
+2. 変更の分析
+
+   - 変更または追加されたファイルの特定
+   - 変更の性質（新機能、バグ修正、リファクタリングなど）の把握
+   - プロジェクトへの影響評価
+   - 機密情報の有無確認
+
+3. コミットメッセージの作成
+
+   - 「なぜ」に焦点を当てる
+   - 明確で簡潔な言葉を使用
+   - 変更の目的を正確に反映
+   - 一般的な表現を避ける
+
+4. コミットの実行
+
+   ```bash
+   # 関連ファイルのみをステージング
+   git add <files>
+
+   # コミットメッセージの作成（HEREDOCを使用）
+   git commit -m "$(cat <<'EOF'
+   feat: ユーザー認証にResult型を導入
+
+   - エラー処理をより型安全に
+   - エラーケースの明示的な処理を強制
+   - テストの改善
+
+   🤖 ${K4}で生成
+   Co-Authored-By: Claude noreply@anthropic.com
+   EOF
+   )"
+   ```
+
+### プルリクエストの作成
+
+プルリクエストを作成する際は、以下の手順に従います：
+
+1. ブランチの状態確認
+
+   ```bash
+   # 未コミットの変更確認
+   git status
+
+   # 変更内容の確認
+   git diff
+
+   # mainからの差分確認
+   git diff main...HEAD
+
+   # コミット履歴の確認
+   git log
+   ```
+
+2. 変更の分析
+
+   - main から分岐後のすべてのコミットの確認
+   - 変更の性質と目的の把握
+   - プロジェクトへの影響評価
+   - 機密情報の有無確認
+
+3. プルリクエストの作成
+
+   ```bash
+   # プルリクエストの作成（HEREDOCを使用）
+   gh pr create --title "feat: Result型によるエラー処理の改善" --body "$(cat <<'EOF'
+   ## 概要
+
+   エラー処理をより型安全にするため、Result型を導入しました。
+
+   ## 変更内容
+
+   - neverthrowを使用したResult型の導入
+   - エラーケースの明示的な型定義
+   - テストケースの追加
+
+   ## レビューのポイント
+
+   - Result型の使用方法が適切か
+   - エラーケースの網羅性
+   - テストの十分性
+   EOF
+   )"
+   ```
+
+### 重要な注意事項
+
+1. コミット関連
+
+   - 可能な場合は `git commit -am` を使用
+   - 関係ないファイルは含めない
+   - 空のコミットは作成しない
+   - git 設定は変更しない
+
+2. プルリクエスト関連
+
+   - 必要に応じて新しいブランチを作成
+   - 変更を適切にコミット
+   - リモートへのプッシュは `-u` フラグを使用
+   - すべての変更を分析
+
+3. 避けるべき操作
+   - 対話的な git コマンド（-i フラグ）の使用
+   - リモートリポジトリへの直接プッシュ
+   - git 設定の変更
+
+### コミットメッセージの例
+
+```bash
+# 新機能の追加
+feat: Result型によるエラー処理の導入
+
+# 既存機能の改善
+update: キャッシュ機能のパフォーマンス改善
+
+# バグ修正
+fix: 認証トークンの期限切れ処理を修正
+
+# リファクタリング
+refactor: Adapterパターンを使用して外部依存を抽象化
+
+# テスト追加
+test: Result型のエラーケースのテストを追加
+
+# ドキュメント更新
+docs: エラー処理のベストプラクティスを追加
+```
+
+### プルリクエストの例
+
+```markdown
+## 概要
+
+TypeScript のエラー処理をより型安全にするため、Result 型を導入しました。
+
+## 変更内容
+
+- neverthrow ライブラリの導入
+- API クライアントでの Result 型の使用
+- エラーケースの型定義
+- テストケースの追加
+
+## 技術的な詳細
+
+- 既存の例外処理を Result 型に置き換え
+- エラー型の共通化
+- モック実装の改善
+
+## レビューのポイント
+
+- Result 型の使用方法が適切か
+- エラーケースの網羅性
+- テストの十分性
+```
+
+
+# コーディングプラクティス
+
+## 対象のファイル形式
+
+- ts
+- tsx
+
+## 原則
+
+### 関数型アプローチ (FP)
+
+- 純粋関数を優先
+- 不変データ構造を使用
+- 副作用を分離
+- 型安全性を確保
+
+### ドメイン駆動設計 (DDD)
+
+- 値オブジェクトとエンティティを区別
+- 集約で整合性を保証
+- リポジトリでデータアクセスを抽象化
+- 境界付けられたコンテキストを意識
+
+### テスト駆動開発 (TDD)
+
+- Red-Green-Refactor サイクル
+- テストを仕様として扱う
+- 小さな単位で反復
+- 継続的なリファクタリング
+
+## 実装パターン
+
+### 型定義
+
+```typescript
+// ブランデッド型で型安全性を確保
+type Branded<T, B> = T & { _brand: B };
+type Money = Branded<number, "Money">;
+type Email = Branded<string, "Email">;
+```
+
+### 値オブジェクト
+
+- 不変
+- 値に基づく同一性
+- 自己検証
+- ドメイン操作を持つ
+
+```typescript
+// 作成関数はバリデーション付き
+function createMoney(amount: number): Result<Money, Error> {
+  if (amount < 0) return err(new Error("負の金額不可"));
+  return ok(amount as Money);
+}
+```
+
+### エンティティ
+
+- ID に基づく同一性
+- 制御された更新
+- 整合性ルールを持つ
+
+### Result 型
+
+```typescript
+type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
+```
+
+- 成功/失敗を明示
+- 早期リターンパターンを使用
+- エラー型を定義
+
+### リポジトリ
+
+- ドメインモデルのみを扱う
+- 永続化の詳細を隠蔽
+- テスト用のインメモリ実装を提供
+
+### アダプターパターン
+
+- 外部依存を抽象化
+- インターフェースは呼び出し側で定義
+- テスト時は容易に差し替え可能
+
+## 実装手順
+
+1. **型設計**
+
+   - まず型を定義
+   - ドメインの言語を型で表現
+
+2. **純粋関数から実装**
+
+   - 外部依存のない関数を先に
+   - テストを先に書く
+
+3. **副作用を分離**
+
+   - IO 操作は関数の境界に押し出す
+   - 副作用を持つ処理を Promise でラップ
+
+4. **アダプター実装**
+   - 外部サービスや DB へのアクセスを抽象化
+   - テスト用モックを用意
+
+## プラクティス
+
+- 小さく始めて段階的に拡張
+- 過度な抽象化を避ける
+- コードよりも型を重視
+- 複雑さに応じてアプローチを調整
+
+## コードスタイル
+
+- 関数優先（クラスは必要な場合のみ）
+- 不変更新パターンの活用
+- 早期リターンで条件分岐をフラット化
+- エラーとユースケースの列挙型定義
+
+## テスト戦略
+
+- 純粋関数の単体テストを優先
+- インメモリ実装によるリポジトリテスト
+- テスト可能性を設計に組み込む
+- アサートファースト：期待結果から逆算
+
+
+## ディレクトリ配置規則
+
+```
+.clinerules      # プロンプト
+docs/            # ドキュメント置き場
+backend/*        # Laravelで構成されたアプリケーション
+frontend/*       # React+Typescriptで構成されたアプリケーション
+```
+
+### frontend/\*
+
+```
+/
+├── frontend/           # Reactフロントエンドアプリケーション
+│   ├── src/            # ソースコード
+│   │   ├── components/ # UIコンポーネント
+│   │   ├── features/   # 機能モジュール
+│   │   ├── apis/       # API連携
+│   │   ├── hooks/      # カスタムフック
+│   │   ├── routes/     # ルーティング
+│   │   └── utils/      # ユーティリティ関数
+│   └── public/         # 静的ファイル
+│
+├── backend/            # Laravelバックエンドアプリケーション
+│   ├── app/            # アプリケーションコード
+│   ├── database/       # マイグレーションとシード
+│   ├── routes/         # APIルート定義
+│   └── ...
+│
+└── docs/               # ドキュメント
+    ├── 要件定義書.md
+    ├── database_design.md
+    └── 各画面の詳細設計書
+```
+
+
+# プロジェクト固有の React
+
+本プロジェクト固有の React での設計方針をまとめます。
+
+
+# React
+
+React でのコーディングにおける一般的なベストプラクティスをまとめます。
+
+## 方針
+
+-
+- コードのコメントとして、そのファイルがどういう仕様化を可能な限り明記する
+
+## 一般的なルール
+
+1. コンポーネントを純関数に保つ
+
+コンピュータサイエンス（特に関数型プログラミングの世界）では、純関数 (pure function) とは、以下のような特徴を持つ関数のことを指します。
+
+- 呼び出される前に存在していたオブジェクトや変数を変更しない。
+- 同じ入力を与えると、純関数は常に同じ結果を返す。
+- レンダーはいつでも起こる可能性があるため、コンポーネントは相互の呼び出し順に依存してはいけない。
+- コンポーネントがレンダーに使用する入力値を書き換えない。これには props、state、コンテクストが含まれる。画面を更新するためには既存のオブジェクトを書き換えるのではなく、代わりに state をセットする。
+- コンポーネントのロジックはできるだけコンポーネントが返す JSX の中で表現する。何かを「変える」必要がある場合、通常はイベントハンドラで行- う。最終手段として useEffect を使用する。
+- 純関数を書くことには訓練が必要だが、それにより React パラダイムの威力が発揮される。
+
+```jsx
+// NG
+let guest = 0;
+
+function Cup() {
+  // Bad: changing a preexisting variable!
+  guest = guest + 1;
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup />
+      <Cup />
+      <Cup />
+    </>
+  );
+}
+
+// OK
+function Cup({ guest }) {
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup guest={1} />
+      <Cup guest={2} />
+      <Cup guest={3} />
+    </>
+  );
+}
+```
+
+2. 基本的に useEffect を使ってはならない
+
+- レンダーのためのデータ変換にエフェクトは必要ありません
+
+例えば、表示する前にリストをフィルタリングしたいとします。リストが変更されたときに state 変数を更新するようなエフェクトを書きたくなるかもしれません。しかし、これは非効率的です。state を更新すると、React はまず、画面の表示内容を計算するためにコンポーネントの関数を呼び出します。次に、React はこれらの変更を DOM に “コミット” して、画面を更新します。その後、React はエフェクトを実行します。ここであなたのエフェクトがまた直ちに state を更新してしまうと、このプロセス全体が最初からやり直しになってしまいます！ 不要なレンダーを避けるために、コンポーネントのトップレベルですべてのデータを変換するようにしましょう。そのコードは、props や state が変更されるたびに自動的に再実行されます。
+
+- ユーザイベントの処理にエフェクトは必要ありません。
+
+例えば、ユーザが製品を購入したときに /api/buy POST リクエストを送信し、通知を表示したいとします。購入ボタンのクリックイベントハンドラでは、何が起こったかが正確にわかります。エフェクトが実行される時点では、ユーザが何をしたのか（例えば、どのボタンがクリックされたのか）はもうわかりません。したがって、通常は対応するイベントハンドラでユーザイベントを処理するべきです。
+
+- props または state に基づいて state を更新するためにエフェクトは必要ありません
+
+```jsx
+// NG
+function Form() {
+  const [firstName, setFirstName] = useState("Taylor");
+  const [lastName, setLastName] = useState("Swift");
+
+  // 🔴 Avoid: redundant state and unnecessary Effect
+  const [fullName, setFullName] = useState("");
+  useEffect(() => {
+    setFullName(firstName + " " + lastName);
+  }, [firstName, lastName]);
+  // ...
+}
+
+// OK
+function Form() {
+  const [firstName, setFirstName] = useState("Taylor");
+  const [lastName, setLastName] = useState("Swift");
+  // ✅ Good: calculated during rendering
+  const fullName = firstName + " " + lastName;
+  // ...
+}
+```
+
+- 重たい計算のキャッシュを解消するためにエフェクトは必要ありません
+
+```jsx
+// NG
+function TodoList({ todos, filter }) {
+  const [newTodo, setNewTodo] = useState("");
+
+  // 🔴 Avoid: redundant state and unnecessary Effect
+  const [visibleTodos, setVisibleTodos] = useState([]);
+  useEffect(() => {
+    setVisibleTodos(getFilteredTodos(todos, filter));
+  }, [todos, filter]);
+}
+
+// OK
+function TodoList({ todos, filter }) {
+  const [newTodo, setNewTodo] = useState("");
+  // ✅ Does not re-run getFilteredTodos() unless todos or filter change
+  const visibleTodos = useMemo(
+    () => getFilteredTodos(todos, filter),
+    [todos, filter]
+  );
+  // ...
+}
+```
+
+- props が変更されたときにすべての state をリセットするためにエフェクトは必要ありません
+
+```jsx
+// NG
+export default function ProfilePage({ userId }) {
+  const [comment, setComment] = useState('');
+
+  // 🔴 Avoid: Resetting state on prop change in an Effect
+  useEffect(() => {
+    setComment('');
+  }, [userId]);
+  // ...
+}
+
+// OK
+export default function ProfilePage({ userId }) {
+  return (
+    <Profile
+      userId={userId}
+      key={userId}
+    />
+  );
+}
+
+function Profile({ userId }) {
+  // ✅ This and any other state below will reset on key change automatically
+  const [comment, setComment] = useState('');
+  // ...
+}
+```
+
+- props が変更されたときに一部の state を調整するためにエフェクトは必要ありません
+
+```jsx
+// NG
+function List({ items }) {
+  const [isReverse, setIsReverse] = useState(false);
+  const [selection, setSelection] = useState(null);
+
+  // 🔴 Avoid: Adjusting state on prop change in an Effect
+  useEffect(() => {
+    setSelection(null);
+  }, [items]);
+  // ...
+}
+
+// OK
+function List({ items }) {
+  const [isReverse, setIsReverse] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  // ✅ Best: Calculate everything during rendering
+  const selection = items.find((item) => item.id === selectedId) ?? null;
+  // ...
+}
+```
+
+- POST リクエストの送信をするためにエフェクトは必要ありません
+
+```jsx
+function Form() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  // ✅ Good: This logic should run because the component was displayed
+  useEffect(() => {
+    post("/analytics/event", { eventName: "visit_form" });
+  }, []);
+
+  // 🔴 Avoid: Event-specific logic inside an Effect
+  const [jsonToSubmit, setJsonToSubmit] = useState(null);
+  useEffect(() => {
+    if (jsonToSubmit !== null) {
+      post("/api/register", jsonToSubmit);
+    }
+  }, [jsonToSubmit]);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setJsonToSubmit({ firstName, lastName });
+  }
+  // ...
+}
+```
+
+- 親にデータを渡すためにエフェクトは必要ありません
+
+```jsx
+// NG
+function Parent() {
+  const [data, setData] = useState(null);
+  // ...
+  return <Child onFetched={setData} />;
+}
+
+function Child({ onFetched }) {
+  const data = useSomeAPI();
+  // 🔴 Avoid: Passing data to the parent in an Effect
+  useEffect(() => {
+    if (data) {
+      onFetched(data);
+    }
+  }, [onFetched, data]);
+  // ...
+}
+
+// OK
+function Parent() {
+  const [data, setData] = useState(null);
+  // ...
+  return <Child onFetched={setData} />;
+}
+
+function Child({ onFetched }) {
+  const data = useSomeAPI();
+  // 🔴 Avoid: Passing data to the parent in an Effect
+  useEffect(() => {
+    if (data) {
+      onFetched(data);
+    }
+  }, [onFetched, data]);
+  // ...
+}
+```
+
+- まとめ
+
+  - レンダー中に計算できるものであれば、エフェクトは必要ない。
+  - 重たい計算をキャッシュするには、useEffect の代わりに useMemo を追加する。
+  - コンポーネントツリー全体の state をリセットするには、異なる key を渡す。
+  - prop の変更に応じて一部の state をリセットする場合、レンダー中に行う。
+  - コンポーネントが表示されたために実行されるコードはエフェクトに、それ以外はイベントハンドラに入れる。
+  - 複数のコンポーネントの state を更新する必要がある場合、単一のイベントで行うことが望ましい。
+  - 異なるコンポーネントの state 変数を同期しようと思った際は、常に state のリフトアップを検討する。
+  - エフェクトでのデータフェッチは可能だが、競合状態を回避するためにクリーンアップを実装する必要がある。
+
+
+## TypeScript
+
+TypeScript でのコーディングにおける一般的なベストプラクティスをまとめます。
+
+### 方針
+
+- 最初に型と、それを処理する関数のインターフェースを考える
+- コードのコメントとして、そのファイルがどういう仕様化を可能な限り明記する
+- 実装が内部状態を持たないとき、 class による実装を避けて関数を優先する
+- 副作用を抽象するために、アダプタパターンで外部依存を抽象し、テストではインメモリなアダプタで処理する
+
+### 型の使用方針
+
+1. 具体的な型を使用
+
+   - any の使用を避ける
+   - unknown を使用してから型を絞り込む
+   - Utility Types を活用する
+
+2. 型エイリアスの命名
+
+   - 意味のある名前をつける
+   - 型の意図を明確にする
+
+   ```ts
+   // Good
+   type UserId = string;
+   type UserData = {
+     id: UserId;
+     createdAt: Date;
+   };
+
+   // Bad
+   type Data = any;
+   ```
+
+### エラー処理
+
+1. Result 型の使用
+
+   ```ts
+   import { err, ok, Result } from "npm:neverthrow";
+
+   type ApiError =
+     | { type: "network"; message: string }
+     | { type: "notFound"; message: string }
+     | { type: "unauthorized"; message: string };
+
+   async function fetchUser(id: string): Promise<Result<User, ApiError>> {
+     try {
+       const response = await fetch(`/api/users/${id}`);
+       if (!response.ok) {
+         switch (response.status) {
+           case 404:
+             return err({ type: "notFound", message: "User not found" });
+           case 401:
+             return err({ type: "unauthorized", message: "Unauthorized" });
+           default:
+             return err({
+               type: "network",
+               message: `HTTP error: ${response.status}`,
+             });
+         }
+       }
+       return ok(await response.json());
+     } catch (error) {
+       return err({
+         type: "network",
+         message: error instanceof Error ? error.message : "Unknown error",
+       });
+     }
+   }
+   ```
+
+2. エラー型の定義
+   - 具体的なケースを列挙
+   - エラーメッセージを含める
+   - 型の網羅性チェックを活用
+
+### 実装パターン
+
+1. 関数ベース（状態を持たない場合）
+
+   ```ts
+   // インターフェース
+   interface Logger {
+     log(message: string): void;
+   }
+
+   // 実装
+   function createLogger(): Logger {
+     return {
+       log(message: string): void {
+         console.log(`[${new Date().toISOString()}] ${message}`);
+       },
+     };
+   }
+   ```
+
+2. class ベース（状態を持つ場合）
+
+   ```ts
+   interface Cache<T> {
+     get(key: string): T | undefined;
+     set(key: string, value: T): void;
+   }
+
+   class TimeBasedCache<T> implements Cache<T> {
+     private items = new Map<string, { value: T; expireAt: number }>();
+
+     constructor(private ttlMs: number) {}
+
+     get(key: string): T | undefined {
+       const item = this.items.get(key);
+       if (!item || Date.now() > item.expireAt) {
+         return undefined;
+       }
+       return item.value;
+     }
+
+     set(key: string, value: T): void {
+       this.items.set(key, {
+         value,
+         expireAt: Date.now() + this.ttlMs,
+       });
+     }
+   }
+   ```
+
+3. Adapter パターン（外部依存の抽象化）
+
+   ```ts
+   // 抽象化
+   type Fetcher = <T>(path: string) => Promise<Result<T, ApiError>>;
+
+   // 実装
+   function createFetcher(headers: Record<string, string>): Fetcher {
+     return async <T>(path: string) => {
+       try {
+         const response = await fetch(path, { headers });
+         if (!response.ok) {
+           return err({
+             type: "network",
+             message: `HTTP error: ${response.status}`,
+           });
+         }
+         return ok(await response.json());
+       } catch (error) {
+         return err({
+           type: "network",
+           message: error instanceof Error ? error.message : "Unknown error",
+         });
+       }
+     };
+   }
+
+   // 利用
+   class ApiClient {
+     constructor(
+       private readonly getData: Fetcher,
+       private readonly baseUrl: string
+     ) {}
+
+     async getUser(id: string): Promise<Result<User, ApiError>> {
+       return await this.getData(`${this.baseUrl}/users/${id}`);
+     }
+   }
+   ```
+
+### 実装の選択基準
+
+1. 関数を選ぶ場合
+
+   - 単純な操作のみ
+   - 内部状態が不要
+   - 依存が少ない
+   - テストが容易
+
+2. class を選ぶ場合
+
+   - 内部状態の管理が必要
+   - 設定やリソースの保持が必要
+   - メソッド間で状態を共有
+   - ライフサイクル管理が必要
+
+3. Adapter を選ぶ場合
+   - 外部依存の抽象化
+   - テスト時のモック化が必要
+   - 実装の詳細を隠蔽したい
+   - 差し替え可能性を確保したい
+
+### 一般的なルール
+
+1. 依存性の注入
+
+   - 外部依存はコンストラクタで注入
+   - テスト時にモックに置き換え可能に
+   - グローバルな状態を避ける
+
+2. インターフェースの設計
+
+   - 必要最小限のメソッドを定義
+   - 実装の詳細を含めない
+   - プラットフォーム固有の型を避ける
+
+3. テスト容易性
+
+   - モックの実装を簡潔に
+   - エッジケースのテストを含める
+   - テストヘルパーを適切に分離
+
+4. コードの分割
+   - 単一責任の原則に従う
+   - 適切な粒度でモジュール化
+   - 循環参照を避ける
+
+
